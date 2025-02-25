@@ -50,9 +50,9 @@ def get_cameras(hdf5_data):
 
 def check_format(raw_dir) -> bool:
     # only frames from simulation are uncompressed
-    compressed_images = "sim" not in raw_dir.name
+    compressed_images = False
 
-    hdf5_paths = list(raw_dir.glob("episode_*.hdf5"))
+    hdf5_paths = list(raw_dir.glob("episode_*.h5"))
     assert len(hdf5_paths) != 0
     for hdf5_path in hdf5_paths:
         with h5py.File(hdf5_path, "r") as data:
@@ -85,9 +85,9 @@ def load_from_raw(
     encoding: dict | None = None,
 ):
     # only frames from simulation are uncompressed
-    compressed_images = "sim" not in raw_dir.name
+    compressed_images = False
 
-    hdf5_files = sorted(raw_dir.glob("episode_*.hdf5"))
+    hdf5_files = sorted(raw_dir.glob("episode_*.h5"))
     num_episodes = len(hdf5_files)
 
     ep_dicts = []
@@ -134,7 +134,7 @@ def load_from_raw(
                     # encode images to a mp4 video
                     fname = f"{img_key}_episode_{ep_idx:06d}.mp4"
                     video_path = videos_dir / fname
-                    encode_video_frames(tmp_imgs_dir, video_path, fps, **(encoding or {}))
+                    encode_video_frames(tmp_imgs_dir, video_path, fps, "mpeg4")
 
                     # clean temporary images directory
                     shutil.rmtree(tmp_imgs_dir)

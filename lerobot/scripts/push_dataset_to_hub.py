@@ -210,7 +210,7 @@ def push_dataset_to_hub(
         "video": video,
         "episodes": episodes,
         "encoding": encoding,
-        "use_qpos_action": use_qpos_action,
+        # "use_qpos_action": use_qpos_action,
     }
 
     if "openx_rlds." in raw_format:

@@ -192,9 +192,9 @@ def get_image_transforms(
     if hue_min_max is not None and hue_weight > 0.0:
         weights.append(hue_weight)
         transforms.append(v2.ColorJitter(hue=hue_min_max))
-    if sharpness_min_max is not None and sharpness_weight > 0.0:
-        weights.append(sharpness_weight)
-        transforms.append(SharpnessJitter(sharpness=sharpness_min_max))
+    # if sharpness_min_max is not None and sharpness_weight > 0.0:
+    #     weights.append(sharpness_weight)
+    #     transforms.append(SharpnessJitter(sharpness=sharpness_min_max))
     if custom_transforms is not None:
         for transform, tf_props in custom_transforms.items():
             weights.append(tf_props["weight"])

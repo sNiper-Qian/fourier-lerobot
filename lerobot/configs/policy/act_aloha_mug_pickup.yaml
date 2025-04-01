@@ -21,8 +21,8 @@
 # ```
 
 seed: 1000
-dataset_repo_id: test
-dataset_root: data
+dataset_repo_id: sniper-qian/mug_pickup_av_real
+# dataset_root: data
 
 hydra:
   run:
@@ -30,17 +30,17 @@ hydra:
     # with the same value for `dir` its contents will be overwritten unless you set `resume` to true.
     dir: outputs/train/${now:%Y-%m-%d}/${now:%H-%M-%S}_${env.name}_${policy.name}_${hydra.job.name}
   job:
-    name: pick_mug
+    name: mug_pickup
 
 override_dataset_stats:
-  observation.images.left:
+  observation.images.wrist_cam_right:
     # stats from imagenet, since we use a pretrained vision model
     mean: [[[0.485]], [[0.456]], [[0.406]]]  # (c,1,1)
     std: [[[0.229]], [[0.224]], [[0.225]]]  # (c,1,1)
-  observation.images.right:
-    # stats from imagenet, since we use a pretrained vision model
-    mean: [[[0.485]], [[0.456]], [[0.406]]]  # (c,1,1)
-    std: [[[0.229]], [[0.224]], [[0.225]]]  # (c,1,1)
+  # observation.images.teleoperator_pov:
+  #   # stats from imagenet, since we use a pretrained vision model
+  #   mean: [[[0.485]], [[0.456]], [[0.406]]]  # (c,1,1)
+  #   std: [[[0.229]], [[0.224]], [[0.225]]]  # (c,1,1)
 
 training:
   offline_steps: 200000
@@ -89,11 +89,14 @@ training:
         args:
           kernel_size: [9, 9]
           sigma: [0.1, 2.0]
-      # Necessary for using Dino_v2 backbone
+      Resize:
+        weight: 1
+        args:
+          size: [240, 320]
       CenterCrop:
         weight: -1
         args:
-          size: [448, 616]
+          size: [224, 308]
 
 eval:
   n_episodes: 50
@@ -105,21 +108,22 @@ policy:
 
   # Input / output structure.
   n_obs_steps: 1
-  chunk_size: 100
+  chunk_size: 40
   n_action_steps: 1
 
   input_shapes:
     # TODO(rcadene, alexander-soare): add variables for height and width from the dataset/env?
-    observation.images.left: [3, 480, 640]
-    observation.images.right: [3, 480, 640]
+    # observation.images.overhead_cam: [3, 240, 320]
+    observation.images.wrist_cam_right: [3, 240, 320]
+    # observation.images.teleoperator_pov: [3, 480, 640]
     observation.state: ["${env.state_dim}"]
   output_shapes:
     action: ["${env.action_dim}"]
 
   # Normalization / Unnormalization
   input_normalization_modes:
-    observation.images.left: mean_std
-    observation.images.right: mean_std
+    observation.images.wrist_cam_right: mean_std
+    # observation.images.teleoperator_pov: mean_std
     observation.state: mean_std
   output_normalization_modes:
     action: mean_std

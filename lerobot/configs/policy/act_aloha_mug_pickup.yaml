@@ -21,7 +21,7 @@
 # ```
 
 seed: 1000
-dataset_repo_id: sniper-qian/mug_pickup_av_real
+# dataset_repo_id: sniper-qian/mug_pickup_av_real
 # dataset_root: data
 
 hydra:
@@ -30,7 +30,7 @@ hydra:
     # with the same value for `dir` its contents will be overwritten unless you set `resume` to true.
     dir: outputs/train/${now:%Y-%m-%d}/${now:%H-%M-%S}_${env.name}_${policy.name}_${hydra.job.name}
   job:
-    name: mug_pickup
+    name: box_open_15hz
 
 override_dataset_stats:
   observation.images.wrist_cam_right:
@@ -108,7 +108,7 @@ policy:
 
   # Input / output structure.
   n_obs_steps: 1
-  chunk_size: 40
+  chunk_size: 100
   n_action_steps: 1
 
   input_shapes:
